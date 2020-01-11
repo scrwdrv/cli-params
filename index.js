@@ -73,7 +73,7 @@ function cliParams(format, target) {
                 if (!format[i].optional)
                     throw `Missing required parameter: ${format[i].param}`;
                 else
-                    result[format[i].param] = format[i].default || null;
+                    result[format[i].param] = format[i].default === undefined ? null : format[i].default;
     return result;
 }
 exports.default = cliParams;
