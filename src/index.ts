@@ -5,12 +5,17 @@ type ParamsFormat = {
     alias?: string;
 }[];
 
-export default function cliParams(format?: ParamsFormat): {
+export default function cliParams(format?: ParamsFormat, target?: string): {
     [param: string]: boolean | string | number;
 } {
-    const args = process.argv.slice(2);
+    let args = process.argv.slice(2),
+        result = {}
 
-    let result = {}
+    if (target) {
+        const val = args.pop();
+        if (!val) throw `No target is found`;
+        result[target] = val;
+    }
 
     for (let i = 0; i < args.length; i++) {
         if (format) {

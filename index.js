@@ -1,8 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-function cliParams(format) {
-    const args = process.argv.slice(2);
-    let result = {};
+function cliParams(format, target) {
+    let args = process.argv.slice(2), result = {};
+    if (target) {
+        const val = args.pop();
+        if (!val)
+            throw `No target is found`;
+        result[target] = val;
+    }
     for (let i = 0; i < args.length; i++) {
         if (format) {
             let index = -1;
