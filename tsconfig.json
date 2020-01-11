@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "alwaysStrict": true,
+        "declaration": true,
+        "sourceMap": true,
+        "lib": [
+            "esnext"
+        ],
+        "outDir": "./"
+    },
+    "include": [
+        "./src"
+    ],
+    "typeRoots": [
+        "./node_modules/@types"
+    ],
+    "exclude": []
+}
