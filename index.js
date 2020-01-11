@@ -48,7 +48,7 @@ function cliParams(format, target) {
                             i++;
                             break;
                         case 'float':
-                            if (/^\d+(\.\d+)?$/.test(args[i + 1]))
+                            if (!/^\d+(\.\d+)?$/.test(args[i + 1]))
                                 throw `Invalid value for ${format[index].param}[${format[index].type}]: ${args[i + 1]}`;
                             result[format[index].param] = parseFloat(args[i + 1]);
                             i++;
