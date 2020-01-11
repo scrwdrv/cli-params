@@ -31,14 +31,14 @@ export default function cliParams(format?: ParamsFormat, target?: string): {
 
             if (!args[i + 1])
                 if (format[index].type === 'boolean') result[format[index].param] = true;
-                else throw `Invaild value for parameter: ${format[index].param}`;
+                else throw `Invalid value for parameter: ${format[index].param}`;
             else {
                 if (/^-/.test(args[i + 1]))
                     if (format[index].type === 'boolean') result[format[index].param] = true;
-                    else throw `Invaild value for parameter: ${format[index].param}`;
+                    else throw `Invalid value for parameter: ${format[index].param}`;
                 else switch (format[index].type) {
                     case 'boolean':
-                        if (!/^true|false$/i.test(args[i + 1])) throw `Invaild value for ${format[index].param}[${format[index].type}]: ${args[i + 1]}`;
+                        if (!/^true|false$/i.test(args[i + 1])) throw `Invalid value for ${format[index].param}[${format[index].type}]: ${args[i + 1]}`;
                         result[format[index].param] = args[i + 1].toLowerCase() === 'true' ? true : false;
                         i++;
                         break;
@@ -47,12 +47,12 @@ export default function cliParams(format?: ParamsFormat, target?: string): {
                         i++;
                         break;
                     case 'int':
-                        if (!/^\d+$/.test(args[i + 1])) throw `Invaild value for ${format[index].param}[${format[index].type}]: ${args[i + 1]}`;
+                        if (!/^\d+$/.test(args[i + 1])) throw `Invalid value for ${format[index].param}[${format[index].type}]: ${args[i + 1]}`;
                         result[format[index].param] = parseInt(args[i + 1]);
                         i++;
                         break;
                     case 'float':
-                        if (/^\d+(\.\d+)?$/.test(args[i + 1])) throw `Invaild value for ${format[index].param}[${format[index].type}]: ${args[i + 1]}`;
+                        if (/^\d+(\.\d+)?$/.test(args[i + 1])) throw `Invalid value for ${format[index].param}[${format[index].type}]: ${args[i + 1]}`;
                         result[format[index].param] = parseFloat(args[i + 1]);
                         i++;
                         break;

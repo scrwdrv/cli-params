@@ -10,6 +10,8 @@ npm i cli-params
 
 ## Usage
 cli-params works on both regular package and globally installed one.
+
+### Simple Method
 ```sh
 # node
 node index.js --p1 --p2 hello
@@ -20,5 +22,15 @@ your-cli-tool --p1 --p2 hello
 import cliParams from 'cli-params';
 
 console.log(cliParams());
+// output: { 'p1': true, 'p2': 'hello' }
+```
+
+### Prebuilt Format
+```js
+import cliParams from 'cli-params';
+
+console.log(cliParams([{
+    
+}]));
 // output: { 'p1': true, 'p2': 'hello' }
 ```
