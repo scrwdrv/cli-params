@@ -24,7 +24,7 @@ import cliParams from 'cli-params';
 console.log(cliParams());
 ```
 ```json
-{ 'p1': true, 'p2': 'hello' }
+{ "p1": true, "p2": "hello" }
 ```
 ---
 ### Prebuilt Format
