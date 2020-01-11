@@ -56,7 +56,7 @@ console.log(cliParams([
 ]));
 ```
 ```json
-{ debug: true, interval: 50, id: 'scrwdrv', bonus: 12 }
+{ "debug": true, "interval": 50, "id": "scrwdrv", "bonus": 12 }
 ```
 ---
 ### Trailing Param (Target)
@@ -75,5 +75,5 @@ console.log(cliParams([
 ], 'url'));
 ```
 ```json
-{ url: 'https://google.com', rate: 50 }
+{ "url": "https://google.com", rate: 50 }
 ```
