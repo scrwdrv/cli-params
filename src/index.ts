@@ -72,7 +72,9 @@ export default function cliParams(format?: ParamsFormat, target?: string): {
 
     if (format)
         for (let i = format.length; i--;)
-            if (!format[i].optional && result[format[i].param] === undefined) throw `Missing required parameter: ${format[i].param}`;
+            if (result[format[i].param] === undefined)
+                if (!format[i].optional) throw `Missing required parameter: ${format[i].param}`;
+                else result[format[i].param] = null;
 
     return result;
 }
