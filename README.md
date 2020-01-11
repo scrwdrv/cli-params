@@ -75,5 +75,5 @@ console.log(cliParams([
 ], 'url'));
 ```
 ```json
-{ "url": "https://google.com", rate: 50 }
+{ "url": "https://google.com", "rate": 50 }
 ```
