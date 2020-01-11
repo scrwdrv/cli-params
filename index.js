@@ -56,15 +56,17 @@ function cliParams(format, target) {
                     }
             }
         }
-        else if (/^--.+$/.test(args[i]))
+        else if (/^--.+$/.test(args[i])) {
+            const param = args[i].slice(2);
             if (!args[i + 1])
-                result[args[i]] = true;
+                result[param] = true;
             else if (/^-/.test(args[i + 1]))
-                result[args[i]] = true;
+                result[param] = true;
             else {
-                result[args[i]] = args[i + 1];
+                result[param] = args[i + 1];
                 i++;
             }
+        }
         else
             throw `Unknown parameter: ${args[i]}`;
     }

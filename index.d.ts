@@ -5,6 +5,6 @@ declare type ParamsFormat = {
     alias?: string;
 }[];
 export default function cliParams(format?: ParamsFormat, target?: string): {
-    [param: string]: boolean | string | number;
+    [param: string]: any;
 };
 export {};

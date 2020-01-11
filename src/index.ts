@@ -6,7 +6,7 @@ type ParamsFormat = {
 }[];
 
 export default function cliParams(format?: ParamsFormat, target?: string): {
-    [param: string]: boolean | string | number;
+    [param: string]: any;
 } {
     let args = process.argv.slice(2),
         result = {}
@@ -59,15 +59,16 @@ export default function cliParams(format?: ParamsFormat, target?: string): {
                 }
             }
         } else
-            if (/^--.+$/.test(args[i]))
-                if (!args[i + 1]) result[args[i]] = true;
+            if (/^--.+$/.test(args[i])) {
+                const param = args[i].slice(2);
+                if (!args[i + 1]) result[param] = true;
                 else
-                    if (/^-/.test(args[i + 1])) result[args[i]] = true;
+                    if (/^-/.test(args[i + 1])) result[param] = true;
                     else {
-                        result[args[i]] = args[i + 1];
+                        result[param] = args[i + 1];
                         i++;
                     }
-            else throw `Unknown parameter: ${args[i]}`;
+            } else throw `Unknown parameter: ${args[i]}`;
     }
 
     if (format)
