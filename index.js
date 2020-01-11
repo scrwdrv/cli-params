@@ -18,43 +18,40 @@ function cliParams(format, target) {
                 }
             if (index === -1)
                 throw `Unknown parameter: ${args[i]}`;
-            if (!args[i + 1])
-                if (format[index].type === 'boolean')
+            if (!args[i + 1] || /^-/.test(args[i + 1]))
+                if (format[index].default)
+                    result[format[index].param] = format[index].default;
+                else if (format[index].type === 'boolean')
                     result[format[index].param] = true;
                 else
                     throw `Invalid value for parameter: ${format[index].param}`;
-            else {
-                if (/^-/.test(args[i + 1]))
-                    if (format[index].type === 'boolean')
-                        result[format[index].param] = true;
-                    else
-                        throw `Invalid value for parameter: ${format[index].param}`;
-                else
-                    switch (format[index].type) {
-                        case 'boolean':
-                            if (!/^true|false$/i.test(args[i + 1]))
-                                throw `Invalid value for ${format[index].param}[${format[index].type}]: ${args[i + 1]}`;
-                            result[format[index].param] = args[i + 1].toLowerCase() === 'true' ? true : false;
-                            i++;
-                            break;
-                        case 'string':
-                            result[format[index].param] = args[i + 1];
-                            i++;
-                            break;
-                        case 'int':
-                            if (!/^\d+$/.test(args[i + 1]))
-                                throw `Invalid value for ${format[index].param}[${format[index].type}]: ${args[i + 1]}`;
-                            result[format[index].param] = parseInt(args[i + 1]);
-                            i++;
-                            break;
-                        case 'float':
-                            if (!/^\d+(\.\d+)?$/.test(args[i + 1]))
-                                throw `Invalid value for ${format[index].param}[${format[index].type}]: ${args[i + 1]}`;
-                            result[format[index].param] = parseFloat(args[i + 1]);
-                            i++;
-                            break;
-                    }
-            }
+            else
+                switch (format[index].type) {
+                    case 'boolean':
+                        if (!/^true|false$/i.test(args[i + 1]))
+                            throw `Invalid value for ${format[index].param}[${format[index].type}]: ${args[i + 1]}`;
+                        result[format[index].param] = args[i + 1].toLowerCase() === 'true' ? true : false;
+                        i++;
+                        break;
+                    case 'string':
+                        result[format[index].param] = args[i + 1];
+                        i++;
+                        break;
+                    case 'int':
+                        if (!/^\d+$/.test(args[i + 1]))
+                            throw `Invalid value for ${format[index].param}[${format[index].type}]: ${args[i + 1]}`;
+                        result[format[index].param] = parseInt(args[i + 1]);
+                        i++;
+                        break;
+                    case 'float':
+                        if (!/^\d+(\.\d+)?$/.test(args[i + 1]))
+                            throw `Invalid value for ${format[index].param}[${format[index].type}]: ${args[i + 1]}`;
+                        result[format[index].param] = parseFloat(args[i + 1]);
+                        i++;
+                        break;
+                    default:
+                        throw `Unknown type: ${format[index].type}`;
+                }
         }
         else if (/^--.+$/.test(args[i])) {
             const param = args[i].slice(2);
@@ -76,7 +73,7 @@ function cliParams(format, target) {
                 if (!format[i].optional)
                     throw `Missing required parameter: ${format[i].param}`;
                 else
-                    result[format[i].param] = null;
+                    result[format[i].param] = format[i].default || null;
     return result;
 }
 exports.default = cliParams;
