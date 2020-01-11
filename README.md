@@ -29,7 +29,7 @@ console.log(cliParams());
 ---
 ### Prebuilt Format
 ```sh
-node index.js -d -i 50 --id scrwdrv --bonus 12.0
+node index.js -d -i --id scrwdrv --bonus 12.0
 ```
 ```js
 console.log(cliParams([
@@ -41,7 +41,8 @@ console.log(cliParams([
     },
     {
         param: 'interval',
-        type: 'int', // no floating point is allowed
+        type: 'int', // no floating point is allowed,
+        default: 50, // default value when value is not given
         alias: 'i'
     },
     {
