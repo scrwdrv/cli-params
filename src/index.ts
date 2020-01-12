@@ -1,12 +1,19 @@
-type ParamsFormat = {
+type ParamFormat = {
     param: string;
     type: 'boolean' | 'string' | 'int' | 'float';
     optional?: boolean;
     alias?: string;
     default?: any;
-}[];
+};
 
-export default function cliParams(format?: ParamsFormat, target?: string): {
+type TargetFormat = {
+    param: string;
+    type: 'boolean' | 'string' | 'int' | 'float';
+    optional?: boolean;
+};
+
+
+export default function cliParams(format?: ParamFormat[], target?: TargetFormat): {
     [param: string]: any;
 } {
     let args = process.argv.slice(2),
@@ -14,8 +21,10 @@ export default function cliParams(format?: ParamsFormat, target?: string): {
 
     if (target) {
         const val = args.pop();
-        if (!val) throw `No target is found`;
-        result[target] = val;
+        if (!val)
+            if (!target.optional) throw `No target is found`;
+            else result[target.param] = null;
+        else parseType(target.type, target.param, val);
     }
 
     for (let i = 0; i < args.length; i++) {
@@ -34,29 +43,7 @@ export default function cliParams(format?: ParamsFormat, target?: string): {
                 if (format[index].default) result[format[index].param] = format[index].default;
                 else if (format[index].type === 'boolean') result[format[index].param] = true;
                 else throw `Invalid value for parameter: ${format[index].param}`;
-            else switch (format[index].type) {
-                case 'boolean':
-                    if (!/^true|false$/i.test(args[i + 1])) throw `Invalid value for ${format[index].param}[${format[index].type}]: ${args[i + 1]}`;
-                    result[format[index].param] = args[i + 1].toLowerCase() === 'true' ? true : false;
-                    i++;
-                    break;
-                case 'string':
-                    result[format[index].param] = args[i + 1];
-                    i++;
-                    break;
-                case 'int':
-                    if (!/^\d+$/.test(args[i + 1])) throw `Invalid value for ${format[index].param}[${format[index].type}]: ${args[i + 1]}`;
-                    result[format[index].param] = parseInt(args[i + 1]);
-                    i++;
-                    break;
-                case 'float':
-                    if (!/^\d+(\.\d+)?$/.test(args[i + 1])) throw `Invalid value for ${format[index].param}[${format[index].type}]: ${args[i + 1]}`;
-                    result[format[index].param] = parseFloat(args[i + 1]);
-                    i++;
-                    break;
-                default:
-                    throw `Unknown type: ${format[index].type}`;
-            }
+            else parseType(format[index].type, format[index].param, args[i + 1]), i++;
 
         } else
             if (/^--.+$/.test(args[i])) {
@@ -78,4 +65,27 @@ export default function cliParams(format?: ParamsFormat, target?: string): {
                 else result[format[i].param] = null;
 
     return result;
+
+    function parseType(type: string, param: string, val: string) {
+        switch (type) {
+            case 'boolean':
+                if (!/^true|false$/i.test(val)) throw `Invalid value for ${param}[${type}]: ${val}`;
+                result[param] = val.toLowerCase() === 'true' ? true : false;
+                break;
+            case 'string':
+                result[param] = val;
+                break;
+            case 'int':
+                if (!/^\d+$/.test(val)) throw `Invalid value for ${param}[${type}]: ${val}`;
+                result[param] = parseInt(val);
+                break;
+            case 'float':
+                if (!/^\d+(\.\d+)?$/.test(val)) throw `Invalid value for ${param}[${type}]: ${val}`;
+                result[param] = parseFloat(val);
+                break;
+            default:
+                throw `Unknown type: ${type}`;
+        }
+    }
 }
+

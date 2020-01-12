@@ -32,29 +32,33 @@ console.log(cliParams());
 node index.js -d -i --id scrwdrv --bonus 12.0
 ```
 ```js
-console.log(cliParams([
-    {
-        param: 'debug',
-        type: 'boolean', // true or false, no given value will be treated as `true`
-        optional: true, // boolean is optional by default, no param means `false`
-        alias: 'd'
-    },
-    {
-        param: 'interval',
-        type: 'int', // no floating point is allowed,
-        default: 50, // default value when value is not given
-        alias: 'i'
-    },
-    {
-        param: 'id',
-        type: 'string'
-    },
-    {
-        param: 'bonus',
-        type: 'float', // allow both int and float
-        optional: false // which is default
-    }
-]));
+console.log(
+    cliParams(
+        [
+            {
+                param: 'debug',
+                type: 'boolean', // true or false, no given value will be treated as `true`
+                optional: true, // boolean is optional by default, no param means `false`
+                alias: 'd'
+            },
+            {
+                param: 'interval',
+                type: 'int', // no floating point is allowed,
+                default: 50, // default value when value is not given
+                alias: 'i'
+            },
+            {
+                param: 'id',
+                type: 'string'
+            },
+            {
+                param: 'bonus',
+                type: 'float', // allow both int and float
+                optional: false // which is default
+            }
+        ]
+    )
+);
 ```
 ```json
 { "debug": true, "interval": 50, "id": "scrwdrv", "bonus": 12 }
@@ -67,13 +71,22 @@ Parameter with no name and located at the end of command line will be treated as
 node index.js -r 50 https://google.com
 ```
 ```js
-console.log(cliParams([
-    {
-        param: 'rate',
-        type: 'int',
-        alias: 'r'
-    }
-], 'url'));
+console.log(
+    cliParams(
+        [
+            {
+                param: 'rate',
+                type: 'int',
+                alias: 'r'
+            }
+        ],
+        {
+            param: 'url',
+            type: 'string',
+            optional: false // which is default
+        }
+    )
+);
 ```
 ```json
 { "url": "https://google.com", "rate": 50 }
