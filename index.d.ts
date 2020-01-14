@@ -18,7 +18,7 @@ declare type ParamFormats = {
 export default class CLIParams {
     private args;
     private formats;
-    add(paramFormats: ParamFormats[] | ParamFormats, cb?: (err?: string) => void): void;
+    add(paramFormats: ParamFormats[] | ParamFormats, cb?: (err?: string) => void): this;
     exec(cb: (err: string, params?: {
         [param: string]: any;
     }, id?: string) => void): void;

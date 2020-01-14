@@ -32,18 +32,25 @@ export default class CLIParams {
         if (!cb) cb = () => { };
         if (Array.isArray(paramFormats)) {
             for (let i = paramFormats.length; i--;)
-                if (!paramFormats[i].id)
-                    return cb(`ID is NOT optional when submitting multiple formats`)
+                if (!paramFormats[i].id) {
+                    cb(`ID is NOT optional when submitting multiple formats`)
+                    return this;
+                };
         } else {
             paramFormats = [paramFormats];
             if (Object.keys(this.formats).length)
-                if (!paramFormats[0].id)
-                    return cb(`ID is NOT optional when submitting multiple formats`);
+                if (!paramFormats[0].id) {
+                    cb(`ID is NOT optional when submitting multiple formats`);
+                    return this;
+                }
         }
 
         for (let i = 0, l = paramFormats.length; i < l; i++) {
             if (!paramFormats[i].id) paramFormats[i].id = 'default';
-            if (this.formats[paramFormats[i].id]) return cb(`Duplicate ID: ${paramFormats[i].id}`);
+            if (this.formats[paramFormats[i].id]) {
+                cb(`Duplicate ID: ${paramFormats[i].id}`);
+                return this;
+            }
             if (!Array.isArray(paramFormats[i].params))
                 paramFormats[i].params = [paramFormats[i].params as ParamFormat];
             this.formats[paramFormats[i].id] = {
@@ -53,6 +60,7 @@ export default class CLIParams {
         }
 
         cb();
+        return this;
     }
 
     exec(cb: (err: string, params?: { [param: string]: any }, id?: string) => void) {

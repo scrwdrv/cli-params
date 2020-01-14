@@ -115,16 +115,13 @@ cliParams.add([
         },
         id: 'version' // id is not optional when multiple formats are submitted
     }
-], (err) => {
+]).exec((err, params, id) => {
     if (err) return console.log(err);
-
-    cliParams.exec((err, params, id) => {
-        if (err) return console.log(err);
-        console.log(id);
-        // output: help
-        console.log(params);
-    });
+    console.log(id);
+    // output: help
+    console.log(params);
 });
+
 ```
 ```json
 { "help": true }
