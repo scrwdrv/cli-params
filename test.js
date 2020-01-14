@@ -139,4 +139,4 @@ class CLIParams {
     }
 }
 exports.default = CLIParams;
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=test.js.map

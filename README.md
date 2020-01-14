@@ -12,6 +12,7 @@ npm i cli-params
 cli-params works on both regular package and globally installed one.
 
 ### Simple Method
+Dead simple, use it on the fly.
 ```sh
 # node
 node index.js --p1 --p2 hello
@@ -19,51 +20,115 @@ node index.js --p1 --p2 hello
 your-cli-tool --p1 --p2 hello
 ```
 ```js
-import cliParams from 'cli-params';
+import CLIParams from 'cli-params';
 
-console.log(cliParams());
+new CLIParams().exec((err, params) => {
+    if (err) return console.log(err);
+    console.log(params);
+});
 ```
 ```json
 { "p1": true, "p2": "hello" }
 ```
 ---
 ### Prebuilt Format
+Use `add` method to add format(s).
 ```sh
 node index.js -d -i --id scrwdrv --bonus 12.0
 ```
 ```js
-console.log(
-    cliParams(
-        [
-            {
-                param: 'debug',
-                type: 'boolean', // true or false, no given value will be treated as `true`
-                optional: true, // boolean is optional by default, no param means `false`
-                alias: 'd'
-            },
-            {
-                param: 'interval',
-                type: 'int', // no floating point is allowed,
-                default: 50, // default value when value is not given
-                alias: 'i'
-            },
-            {
-                param: 'id',
-                type: 'string'
-            },
-            {
-                param: 'bonus',
-                type: 'float', // allow both int and float
-                optional: false // which is default
-            }
-        ]
-    )
-);
+const cliParams = new CLIParams();
+
+cliParams.add({
+    params: [
+        {
+            param: 'debug',
+            type: 'boolean', // true or false, no given value will be treated as `true`
+            optional: true, // boolean is optional by default, no param means `false`
+            alias: 'd'
+        },
+        {
+            param: 'interval',
+            type: 'int', // no floating point is allowed,
+            default: 50, // default value when value is not given
+            alias: 'i'
+        },
+        {
+            param: 'id',
+            type: 'string'
+        },
+        {
+            param: 'bonus',
+            type: 'float', // allow both int and float
+            optional: false // which is default
+        }
+    ]
+}, (err) => {
+    if (err) return console.log(err);
+    cliParams.exec((err, params) => {
+        if (err) return console.log(err);
+        console.log(params);
+    });
+});
 ```
 ```json
 { "debug": true, "interval": 50, "id": "scrwdrv", "bonus": 12 }
 ```
 ---
+
+### Mutiple Formats
+You can pass formats in an array, by array index order, formats will be used to parse given parameters and callback the first successfully parsed one.
+```sh
+node index.js -h
+```
+```js
+cliParams.add([
+    {
+        params: [
+            {
+                param: 'input',
+                type: 'string',
+                alias: 'i'
+            },
+            {
+                param: 'password',
+                type: 'string',
+                optional: true,
+                alias: 'p'
+            }
+        ],
+        id: 'regular' // id is not optional when multiple formats are submitted
+    },
+    {
+        params: {
+            param: 'help',
+            type: 'boolean',
+            alias: 'h'
+        },
+        id: 'help' // id is not optional when multiple formats are submitted
+    },
+    {
+        params: {
+            param: 'version',
+            type: 'boolean',
+            alias: 'v'
+        },
+        id: 'version' // id is not optional when multiple formats are submitted
+    }
+], (err) => {
+    if (err) return console.log(err);
+
+    cliParams.exec((err, params, id) => {
+        if (err) return console.log(err);
+        console.log(id);
+        // output: help
+        console.log(params);
+    });
+});
+```
+```json
+{ "help": true }
+```
 ### Trailing Param (Target)
 Parameter with no name and located at the end of command line will be treated as `Target`. Every cmd can only have one target and need to be named beforehand.
 
@@ -71,22 +136,25 @@ Parameter with no name and located at the end of command line will be treated as
 node index.js -r 50 https://google.com
 ```
 ```js
-console.log(
-    cliParams(
-        [
-            {
-                param: 'rate',
-                type: 'int',
-                alias: 'r'
-            }
-        ],
-        {
-            param: 'url',
-            type: 'string',
-            optional: false // which is default
-        }
-    )
-);
+cliParams.add({
+    params:
+    {
+        param: 'rate',
+        type: 'int',
+        alias: 'r'
+    },
+    target: {
+        param: 'url',
+        type: 'string',
+        optional: false // which is default
+    }
+}, (err) => {
+    if (err) return console.log(err);
+    cliParams.exec((err, params) => {
+        if (err) return console.log(err);
+        console.log(params);
+    });
+});
 ```
 ```json
 { "url": "https://google.com", "rate": 50 }
