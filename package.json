@@ -1,6 +1,6 @@
 {
   "name": "cli-params",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "cli-params is a simple module that helps your CLI tool parse command line arguments and build parameters format to test if cmd is valid",
   "main": "index.js",
   "scripts": {

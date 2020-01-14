@@ -134,39 +134,6 @@ cliParams.add([
 ```json
 { "help": true }
 ```
-
-
-### Array of ...
-Passing multiple values with space as separator to a single parameter.
-```sh
-node index.js -i 1 2 3 4 5 -s google yahoo myTarget 
-```
-```js
-new CLIParams().add({
-    params: [
-        {
-            param: 'intArr',
-            type: 'array-of-int',
-            alias: 'i'
-        }, {
-            param: 'stringArr',
-            type: 'array-of-string',
-            alias: 's'
-        }
-    ],
-    target: {
-        param: 'target',
-        type: 'string'
-    }
-}).exec(async (err, params) => {
-    if (err) return console.log(err);
-    console.log(params);
-});
-```
-```json
-{ "target": "myTarget", "intArr": [ 1, 2, 3, 4, 5 ], "stringArr": [ "google", "yahoo" ] }
-```
-
 ### <span id="target">Trailing Param (Target)</a>
 Parameter with no name and located at the end of command line will be treated as `Target`. Every cmd can only have one target and need to be named beforehand.
 
@@ -196,4 +163,34 @@ cliParams.add({
 ```
 ```json
 { "url": "https://google.com", "rate": 50 }
+```
+### Array of ...
+Passing multiple values with space as separator to a single parameter.
+```sh
+node index.js -i 1 2 3 4 5 -s google yahoo myTarget 
+```
+```js
+new CLIParams().add({
+    params: [
+        {
+            param: 'intArr',
+            type: 'array-of-int',
+            alias: 'i'
+        }, {
+            param: 'stringArr',
+            type: 'array-of-string',
+            alias: 's'
+        }
+    ],
+    target: {
+        param: 'target',
+        type: 'string'
+    }
+}).exec(async (err, params) => {
+    if (err) return console.log(err);
+    console.log(params);
+});
+```
+```json
+{ "target": "myTarget", "intArr": [ 1, 2, 3, 4, 5 ], "stringArr": [ "google", "yahoo" ] }
 ```
