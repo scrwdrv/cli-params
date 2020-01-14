@@ -1,6 +1,6 @@
 declare type ParamFormat = {
     param: string;
-    type: 'boolean' | 'string' | 'int' | 'float';
+    type: 'boolean' | 'string' | 'int' | 'float' | 'array-of-boolean' | 'array-of-string' | 'array-of-int' | 'array-of-float';
     optional?: boolean;
     alias?: string;
     default?: any;

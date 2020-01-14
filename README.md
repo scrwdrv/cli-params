@@ -74,7 +74,15 @@ cliParams.add({
 ```json
 { "debug": true, "interval": 50, "id": "scrwdrv", "bonus": 12 }
 ```
----
+#### Types for Param
+- int 
+- float
+- string
+- boolean
+- array-of-int     (not available for [Target](#target))
+- array-of-float   (not available for [Target](#target))
+- array-of-string  (not available for [Target](#target))
+- array-of-boolean (not available for [Target](#target))
 
 ### Mutiple Formats
 You can pass formats in an array, by array index order, formats will be used to parse given parameters and callback the first successfully parsed one.
@@ -126,7 +134,40 @@ cliParams.add([
 ```json
 { "help": true }
 ```
-### Trailing Param (Target)
+
+
+### Array of ...
+Passing multiple values with space as separator to a single parameter.
+```sh
+node index.js -i 1 2 3 4 5 -s google yahoo myTarget 
+```
+```js
+new CLIParams().add({
+    params: [
+        {
+            param: 'intArr',
+            type: 'array-of-int',
+            alias: 'i'
+        }, {
+            param: 'stringArr',
+            type: 'array-of-string',
+            alias: 's'
+        }
+    ],
+    target: {
+        param: 'target',
+        type: 'string'
+    }
+}).exec(async (err, params) => {
+    if (err) return console.log(err);
+    console.log(params);
+});
+```
+```json
+{ "target": "myTarget", "intArr": [ 1, 2, 3, 4, 5 ], "stringArr": [ "google", "yahoo" ] }
+```
+
+### <span id="target">Trailing Param (Target)</a>
 Parameter with no name and located at the end of command line will be treated as `Target`. Every cmd can only have one target and need to be named beforehand.
 
 ```sh

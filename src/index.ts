@@ -1,6 +1,6 @@
 type ParamFormat = {
     param: string;
-    type: 'boolean' | 'string' | 'int' | 'float';
+    type: 'boolean' | 'string' | 'int' | 'float' | 'array-of-boolean' | 'array-of-string' | 'array-of-int' | 'array-of-float';
     optional?: boolean;
     alias?: string;
     default?: any;
@@ -98,11 +98,18 @@ export default class CLIParams {
 
                     if (index === -1) return next(`Unknown parameter: ${args[i]}`);
 
+                    const isArray = /^array-of-/.test(this.formats[id].params[index].type);
+
                     if (!args[i + 1] || /^-/.test(args[i + 1]))
                         if (this.formats[id].params[index].default) result[this.formats[id].params[index].param] = this.formats[id].params[index].default;
                         else if (this.formats[id].params[index].type === 'boolean') result[this.formats[id].params[index].param] = true;
                         else return next(`Invalid value for parameter: ${this.formats[id].params[index].param}`);
-                    else {
+                    else if (isArray) for (let j = i + 1; j < args.length; j++) {
+                        if (/^-/.test(args[j])) break;
+                        const err = parseType(this.formats[id].params[index].type, this.formats[id].params[index].param, args[j], true)
+                        if (err) return next(err);
+                        else i++
+                    } else {
                         const err = parseType(this.formats[id].params[index].type, this.formats[id].params[index].param, args[i + 1])
                         if (err) return next(err);
                         else i++
@@ -116,23 +123,35 @@ export default class CLIParams {
 
                 next();
 
-                function parseType(type: string, param: string, val: string): string | void {
+                function parseType(type: string, param: string, val: string, isArray = false): string | void {
+                    if (isArray) {
+                        type = type.slice(9);
+                        if (!result[param]) result[param] = [];
+                    }
+
                     switch (type) {
                         case 'boolean':
-                            if (!/^true|false$/i.test(val)) return `Invalid value for ${param}[${type}]: ${val}`;
-                            result[param] = val.toLowerCase() === 'true' ? true : false;
+                            if (!/^(?:true|false)$/i.test(val)) return `Invalid value for ${param}[${type}]: ${val}`;
+                            const boo = val.toLowerCase() === 'true' ? true : false;
+                            if (isArray) result[param].push(boo);
+                            else result[param] = boo;
                             break;
                         case 'string':
                             if (!val) return `No value for ${param}[${type}]`;
-                            result[param] = val;
+                            if (isArray) result[param].push(val);
+                            else result[param] = val;
                             break;
                         case 'int':
                             if (!/^\d+$/.test(val)) return `Invalid value for ${param}[${type}]: ${val}`;
-                            result[param] = parseInt(val);
+                            const int = parseInt(val);
+                            if (isArray) result[param].push(int);
+                            else result[param] = int;
                             break;
                         case 'float':
                             if (!/^\d+(\.\d+)?$/.test(val)) return `Invalid value for ${param}[${type}]: ${val}`;
-                            result[param] = parseFloat(val);
+                            const float = parseFloat(val);
+                            if (isArray) result[param].push(float);
+                            else result[param] = float;
                             break;
                         default:
                             return `Unknown type: ${type}`;
@@ -149,12 +168,17 @@ export default class CLIParams {
                 if (/^--.+$/.test(args[i])) {
                     const param = args[i].slice(2);
                     if (!args[i + 1]) result[param] = true;
-                    else
-                        if (/^-/.test(args[i + 1])) result[param] = true;
-                        else {
-                            result[param] = args[i + 1];
+                    else for (let j = i + 1; j < args.length; j++) {
+                        if (/^-/.test(args[j])) {
+                            if (!result[param]) result[param] = true;
+                            break;
+                        } else {
+                            if (!result[param]) result[param] = args[j];
+                            else if (Array.isArray(result[param])) result[param].push(args[j])
+                            else result[param] = [result[param], args[j]];
                             i++;
                         }
+                    }
                 } else return cb(`Unknown parameter: ${args[i]}`);
 
             cb(null, result);
