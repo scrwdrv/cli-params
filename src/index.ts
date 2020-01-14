@@ -28,7 +28,8 @@ export default class CLIParams {
     } = {};
 
 
-    add(paramFormats: ParamFormats[] | ParamFormats, cb: (err?: string) => void) {
+    add(paramFormats: ParamFormats[] | ParamFormats, cb?: (err?: string) => void) {
+        if (!cb) cb = () => { };
         if (Array.isArray(paramFormats)) {
             for (let i = paramFormats.length; i--;)
                 if (!paramFormats[i].id)

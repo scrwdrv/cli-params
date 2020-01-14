@@ -6,6 +6,8 @@ class CLIParams {
         this.formats = {};
     }
     add(paramFormats, cb) {
+        if (!cb)
+            cb = () => { };
         if (Array.isArray(paramFormats)) {
             for (let i = paramFormats.length; i--;)
                 if (!paramFormats[i].id)
